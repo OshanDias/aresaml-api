@@ -11,4 +11,6 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# JVM flags tuned for a small (256 MB) free-tier container:
+# cap the heap to a share of container RAM and use the lightweight serial GC.
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=65.0", "-XX:+UseSerialGC", "-Xss512k", "-jar", "app.jar"]
